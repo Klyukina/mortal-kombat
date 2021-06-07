@@ -56,27 +56,30 @@ const changeHP = (player) => {
   const $playerLife = document.querySelector('.player'+player.player+' .life');
   player.hp -= Math.floor(Math.random() * 20) + 1;
   $playerLife.style.width = player.hp + '%';
-
-  if (player1.hp <= 0) {
-    $arenas.appendChild(playerLose(player2.name));
+  if (player.hp <= 0) {
     player.hp = 0;
-    $randomButton.disabled = true
-  } else if (player2.hp <= 0) {
-    $arenas.appendChild(playerLose(player1.name));
-    player.hp = 0;
-    $randomButton.disabled = true
   }
 }
 
-const playerLose = (name) => {
-  const $loseTitle = createElement('div', 'loseTitle');
-  $loseTitle.innerText = name + ' wins';
-  return $loseTitle;
+const playerWins = (name) => {
+  const $winsTitle = createElement('div', 'winsTitle');
+  $winsTitle.innerText = name + ' wins';
+  return $winsTitle;
 }
 
 $randomButton.addEventListener('click', function () {
   changeHP(player1);
   changeHP(player2);
+
+  if (player1.hp === 0 || player2.hp === 0) {
+    $randomButton.disabled = true;
+  }
+
+  if (player1.hp === 0 && player1.hp < player2.hp) {
+    $arenas.appendChild(playerWins(player2.name));
+  } else if (player2.hp === 0 && player2.hp < player1.hp) {
+    $arenas.appendChild(playerWins(player1.name));
+  }
 });
 
 $arenas.appendChild(createPlayer(player1));
