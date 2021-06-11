@@ -137,17 +137,13 @@ $formFight.addEventListener('submit', function (e) {
     item.checked = false;
   }
 
-  if (attack.defence === enemy.hit) {
-    player1.changeHP(0);
-  }
-  if (attack.hit === enemy.defence) {
-    player2.changeHP(0);
-  }
   if (attack.defence !== enemy.hit) {
     player1.changeHP(enemy.value);
+    player1.renderHP();
   }
   if (enemy.defence !== attack.hit) {
     player2.changeHP(attack.value);
+    player2.renderHP();
   }
 
   player1.renderHP();
