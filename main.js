@@ -216,13 +216,13 @@ function generateLogs(type, player1, player2, hp) {
       text = logs[type][getRandom(num)]
         .replace('[playerKick]', player1.name)
         .replace('[playerDefence]', player2.name);
-      el = `<p>${time} - ${text} -${hp}</p>`
+      el = `<p>${time} - ${text} -${hp} [${player2.hp}/100]</p>`
       break;
     case 'defence':
       text = logs[type][getRandom(num)]
         .replace('[playerKick]', player1.name)
         .replace('[playerDefence]', player2.name);
-      el = `<p>${time} - ${text}</p>`
+      el = `<p>${time} - ${text} [${player2.hp}/100]</p>`
       break;
     case 'draw':
       text = logs[type];
