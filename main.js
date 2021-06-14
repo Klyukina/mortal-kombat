@@ -1,6 +1,8 @@
 const $arenas = document.querySelector('.arenas');
 const $randomButton = document.querySelector('.button');
 const $formFight = document.querySelector('.control');
+const $chat = document.querySelector('.chat');
+
 const HIT = {
   head: 30,
   body: 25,
@@ -120,9 +122,7 @@ function enemyAttack() {
   }
 }
 
-$formFight.addEventListener('submit', function (e) {
-  e.preventDefault();
-  const enemy = enemyAttack();
+function playerAttack() {
   const attack = {};
 
   for (let item of $formFight) {
@@ -137,18 +137,10 @@ $formFight.addEventListener('submit', function (e) {
     item.checked = false;
   }
 
-  if (attack.defence !== enemy.hit) {
-    player1.changeHP(enemy.value);
-    player1.renderHP();
-  }
-  if (enemy.defence !== attack.hit) {
-    player2.changeHP(attack.value);
-    player2.renderHP();
-  }
+  return attack;
+}
 
-  player1.renderHP();
-  player2.renderHP();
-
+function showResult() {
   if (player1.hp === 0 || player2.hp === 0) {
     $randomButton.disabled = true;
     createReloadButton();
@@ -160,4 +152,58 @@ $formFight.addEventListener('submit', function (e) {
   } else if (player1.hp === 0 && player2.hp === 0) {
     $arenas.appendChild(playerWins());
   }
+}
+
+function generateLogs(type, player1, player2) {
+  let num = logs[type].length-1;
+  console.log(num)
+  let text = '';
+  const date = new Date();
+  const time = date.getHours() + ':' + date.getMinutes();
+
+  switch (type) {
+    case 'start':
+      text = logs[type]
+        .replace('[time]', time)
+        .replace('[player1]', player1.name)
+        .replace('[player2]', player2.name)
+      break;
+    case 'hit':
+      text = logs[type][getRandom(num)]
+        .replace('[playerKick]', player1.name)
+        .replace('[playerDefence]', player2.name);
+      break;
+    case 'defense':
+      text = logs[type][getRandom(num)]
+        .replace('[playerKick]', player1.name)
+        .replace('[playerDefence]', player2.name);
+      break;
+    case 'draw':
+      text = logs[type]
+    break;
+  }
+  const el = `<p>${text}</p>`
+  $chat.insertAdjacentHTML('afterbegin', el);
+}
+
+$formFight.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const enemy = enemyAttack();
+  const player = playerAttack();
+
+  generateLogs('start', player1, player2);
+
+  if (player.defence !== enemy.hit) {
+    player1.changeHP(enemy.value);
+    player1.renderHP();
+    generateLogs('hit', player2, player1);
+  }
+
+  if (enemy.defence !== player.hit) {
+    player2.changeHP(player.value);
+    player2.renderHP();
+    generateLogs('hit', player1, player2);
+  }
+
+  showResult();
 })
